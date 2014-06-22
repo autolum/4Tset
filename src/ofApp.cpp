@@ -1,7 +1,7 @@
-#include "testApp.h"
+#include "ofApp.h"
 
 //--------------------------------------------------------------
-void testApp::setup(){
+void ofApp::setup(){
     
     ofSetFrameRate(60);
     ofSetVerticalSync(true);
@@ -14,8 +14,11 @@ void testApp::setup(){
     set.col = ofColor(red,green,blue);
     presets.push_back(set);
     sprintf(cbuffer,"%d / %d", pidx+1, (int) presets.size());
-    sprintf(filename,"presets.xml");
-    
+    //sprintf(filename,"presets.xml");
+    filename = "001.xml";
+    sdir.open("presets");
+    sdir.create();
+    cout << "path: " << sdir.path()+"/"+filename << "\n";
     
     gui = new ofxUICanvas(0,0,318,600);
     gui->setDrawBack(false);
@@ -23,7 +26,7 @@ void testApp::setup(){
     //gui->setFont("GUI/Sansation-Bold.ttf");
     gui->setDrawPadding(false);
     gui->setWidgetSpacing(4);
-    gui->addTextInput("filename", filename,310-104,50,4,4,OFX_UI_FONT_MEDIUM);
+    filetxt = gui->addTextInput("filename", filename,310-104,50,4,4,OFX_UI_FONT_MEDIUM);
     PXLmatrix = gui->addToggleMatrix("PXLMATRIX", 4, 6,50,50);
     gui->setGlobalSliderHeight(50);
     rslide = gui->addBiLabelSlider("RED", " R", "200 ", 0.0, 255.0, &red);
@@ -42,6 +45,9 @@ void testApp::setup(){
     gui->addWidget(new ofxUILabelButton("s", false, 50, 50, 212, 4, OFX_UI_FONT_MEDIUM));
     gui->addWidget(new ofxUILabelButton("l", false, 50, 50, 264, 4, OFX_UI_FONT_MEDIUM));
         
+    filetxt->setAutoClear(false);
+    filetxt->setTriggerType(OFX_UI_TEXTINPUT_ON_ENTER);
+    
     pid = (ofxUILabelButton *) gui->getWidget("pid");
     pmx = (ofxUILabelButton *) gui->getWidget("pmx");
     pid->setLabelText(ofToString(pidx+1));
@@ -65,11 +71,11 @@ void testApp::setup(){
     for (int i = 0; i < toggles.size(); i++){
         toggles[i]->setColorFill(ofColor(255,200));
         toggles[i]->setColorBack(ofColor(0,100));
-        toggles[i]->setLabelText(ofToString(i));
-        toggles[i]->setLabelVisible(true);
+        //toggles[i]->setLabelText(ofToString(i));
+        //toggles[i]->setLabelVisible(true);
     }
     
-    ofAddListener(gui->newGUIEvent,this,&testApp::guiEvent);
+    ofAddListener(gui->newGUIEvent,this,&ofApp::guiEvent);
     
     pyra = new ftetra(2);
     pyra->render(red,green,blue);
@@ -77,7 +83,7 @@ void testApp::setup(){
 }
 
 //--------------------------------------------------------------
-void testApp::update(){
+void ofApp::update(){
     
     /*
     int nled = 0;
@@ -98,32 +104,37 @@ void testApp::update(){
 }
 
 //--------------------------------------------------------------
-void testApp::draw(){
+void ofApp::draw(){
     //ofSetBackgroundColor(40, 43, 53);
     pyra->fbo.draw(918-600, 0, 600, 600);
 
 }
 
 //--------------------------------------------------------------
-void testApp::keyPressed(int key){
-    
-    int nled = 0;
-    
-    if(tcpClient.isConnected()) {
-        if(key == 'r'){
-            red+=10;
+void ofApp::keyPressed(int key){
+    if(key == OF_KEY_RETURN && filetxt->isFocused()){
+        filename = filetxt->getTextString();
+        sdir.listDir();
+        files.clear();
+        files = sdir.getFiles();
+        for(int i = 0; i<files.size(); i++){
+            int sc = strcmp(files[i].getFileName().c_str(), filename.c_str());
+            //cout << files[i].getFileName() << "  " << sc << "\n";
+            if(sc == 0) loadPrst();
+            else {
+                presets.clear();
+                set.val.assign(24, false);
+                presets.push_back(set);
+                updatePrst(0);
+            }
         }
-        
     }
-    
-    char cmd[18];
-    sprintf(cmd, "LED/%d/%d/%d/%d",nled,(int)red,(int)green,(int)blue);
-    tcpClient.send(cmd);
+
 
 }
 
 //--------------------------------------------------------------
-void testApp::updatePrst(int i){
+void ofApp::updatePrst(int i){
     for (int k = 0; k < 24; k++){
         pyra->stripS[k] = presets[i].val[k];
         toggles[k]->setValue(presets[i].val[k]);
@@ -134,7 +145,7 @@ void testApp::updatePrst(int i){
     }
 }
 //--------------------------------------------------------------
-void testApp::savePrst(){
+void ofApp::savePrst(){
     presetsXML.clear();
     presetsXML.addTag("Presets");
     presetsXML.pushTag("Presets");
@@ -148,10 +159,10 @@ void testApp::savePrst(){
         presetsXML.popTag();
     }
     presetsXML.popTag();
-    presetsXML.saveFile(filename);
+    presetsXML.saveFile(sdir.path()+"/"+filename);
 }
-void testApp::loadPrst(){
-    if(presetsXML.loadFile(filename)){
+void ofApp::loadPrst(){
+    if(presetsXML.loadFile(sdir.path()+"/"+filename)){
         presets.clear();
         presetsXML.pushTag("Presets");
         int np = presetsXML.getNumTags("preset");
@@ -168,10 +179,13 @@ void testApp::loadPrst(){
             presetsXML.popTag();
     }
     presetsXML.popTag();
+    pidx = 0;
+    updatePrst(0);
+    
     }
 }
 //--------------------------------------------------------------
-void testApp::guiEvent(ofxUIEventArgs &e)
+void ofApp::guiEvent(ofxUIEventArgs &e)
 {
     string name = e.widget->getName();
 	int kind = e.widget->getKind();

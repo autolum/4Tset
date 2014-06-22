@@ -7,7 +7,7 @@
 #include "preset.h"
 
 
-class testApp : public ofBaseApp{
+class ofApp : public ofBaseApp{
 	public:
 		void setup();
 		void update();
@@ -27,6 +27,7 @@ class testApp : public ofBaseApp{
          
         ofxTCPClient tcpClient;
     
+        ofxUITextInput *filetxt;
         ofxUILabelButton *pid;
         ofxUILabelButton *pmx;
         ofxUILabelButton *nextB;
@@ -40,7 +41,7 @@ class testApp : public ofBaseApp{
         ofxUILabel *pLabel;
         ofxUILabel *pmax;
         ofxUIToggleMatrix  *PXLmatrix;
-        vector<ofxUILabelToggle *> toggles;
+        vector<ofxUIToggle *> toggles;
         ofxUIDropDownList *ddl;
         ofxUICanvas *gui;
         void guiEvent(ofxUIEventArgs &e);
@@ -61,6 +62,8 @@ class testApp : public ofBaseApp{
     
         int pidx;
         char cbuffer[50];
-        char filename[100];
+        string filename;
+        ofDirectory sdir;
+        vector<ofFile> files;
     
 };
