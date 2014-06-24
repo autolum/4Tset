@@ -6,24 +6,21 @@ void ofApp::setup(){
     ofSetFrameRate(60);
     ofSetVerticalSync(true);
     ofBackground(80, 80, 80,255);
-    //bool connected = tcpClient.setup("192.168.240.1", 5555);
+  //initial color set
     red = 200;
     green = 200;
     blue = 200;
     pidx = 0;
     set.col = ofColor(red,green,blue);
     presets.push_back(set);
-    sprintf(cbuffer,"%d / %d", pidx+1, (int) presets.size());
-    //sprintf(filename,"presets.xml");
+  //filename
     filename = "001.xml";
     sdir.open("presets");
     sdir.create();
-    cout << "path: " << sdir.path()+"/"+filename << "\n";
-    
+  //gui setup
     gui = new ofxUICanvas(0,0,318,600);
     gui->setDrawBack(false);
     gui->setFont("GUI/SourceCodePro-Bold.otf");
-    //gui->setFont("GUI/Sansation-Bold.ttf");
     gui->setDrawPadding(false);
     gui->setWidgetSpacing(4);
     filetxt = gui->addTextInput("filename", filename,310-104,50,4,4,OFX_UI_FONT_MEDIUM);
@@ -44,15 +41,12 @@ void ofApp::setup(){
     gui->addWidget(new ofxUILabelToggle("connect", false,102,50,108,546,OFX_UI_FONT_MEDIUM));
     gui->addWidget(new ofxUILabelButton("s", false, 50, 50, 212, 4, OFX_UI_FONT_MEDIUM));
     gui->addWidget(new ofxUILabelButton("l", false, 50, 50, 264, 4, OFX_UI_FONT_MEDIUM));
-        
     filetxt->setAutoClear(false);
     filetxt->setTriggerType(OFX_UI_TEXTINPUT_ON_ENTER);
-    
     pid = (ofxUILabelButton *) gui->getWidget("pid");
     pmx = (ofxUILabelButton *) gui->getWidget("pmx");
     pid->setLabelText(ofToString(pidx+1));
     pmx->setLabelText(ofToString(presets.size()));
-    
     rslide->setColorBack(ofColor(0,0,0,100));
     rslide->setColorFill(ofColor(255,0,0,50));
     rslide->setColorFillHighlight(ofColor(255,0,0,200));
@@ -62,11 +56,9 @@ void ofApp::setup(){
     bslide->setColorBack(ofColor(0,0,0,100));
     bslide->setColorFill(ofColor(0,0,255,50));
     bslide->setColorFillHighlight(ofColor(0,0,255,200));
-    
     rlabel = rslide->getRightLabel();
     glabel = gslide->getRightLabel();
     blabel = bslide->getRightLabel();
-    
     toggles = PXLmatrix->getToggles();
     for (int i = 0; i < toggles.size(); i++){
         toggles[i]->setColorFill(ofColor(255,200));
@@ -74,9 +66,8 @@ void ofApp::setup(){
         //toggles[i]->setLabelText(ofToString(i));
         //toggles[i]->setLabelVisible(true);
     }
-    
     ofAddListener(gui->newGUIEvent,this,&ofApp::guiEvent);
-    
+  //preview render
     pyra = new ftetra(2);
     pyra->render(red,green,blue);
 
@@ -85,29 +76,11 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::update(){
     
-    /*
-    int nled = 0;
-    
-    if(tcpClient.isConnected()) {
-        string str = tcpClient.receive(); // did anything come in
-    }
-    
-    red = ofRandom(55);
-    green = ofRandom(55);
-    blue = ofRandom(55);
-    char cmd[18];
-    sprintf(cmd, "LED/%d/%d/%d/%d",nled,red,green,blue);
-    tcpClient.send(cmd);
-    
-    if (red>255) red = 0;
-     */
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    //ofSetBackgroundColor(40, 43, 53);
     pyra->fbo.draw(918-600, 0, 600, 600);
-
 }
 
 //--------------------------------------------------------------
@@ -126,6 +99,8 @@ void ofApp::keyPressed(int key){
                 set.val.assign(24, false);
                 presets.push_back(set);
                 updatePrst(0);
+                pid->setLabelText("1");
+                pmx->setLabelText(ofToString(presets.size()));
             }
         }
     }
@@ -141,7 +116,6 @@ void ofApp::updatePrst(int i){
         red = presets[i].col.r;
         green = presets[i].col.g;
         blue = presets[i].col.b;
-        
     }
 }
 //--------------------------------------------------------------
@@ -181,7 +155,8 @@ void ofApp::loadPrst(){
     presetsXML.popTag();
     pidx = 0;
     updatePrst(0);
-    
+    pid->setLabelText("1");
+    pmx->setLabelText(ofToString(presets.size()));
     }
 }
 //--------------------------------------------------------------
@@ -195,8 +170,6 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
         pyra->stripS[i] = val;
         set.set(i,val);
     }
-    set.col = ofColor(red,green,blue);
-    presets[pidx] = set;
     
 	if(name == "RED")
 	{
@@ -291,8 +264,8 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
         updatePrst(pidx);
     }
     set.col = ofColor(red,green,blue);
+    presets[pidx] = set;
     pyra->render(red,green,blue);
     pid->setLabelText(ofToString(pidx+1));
     pmx->setLabelText(ofToString(presets.size()));
-    //pyra->fbo.draw(918-600, 0, 600, 600);
 }

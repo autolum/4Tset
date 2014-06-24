@@ -6,8 +6,8 @@
 //
 //
 
-#ifndef __yunapp__preset__
-#define __yunapp__preset__
+#ifndef __4Tset__preset__
+#define __4Tset__preset__
 
 #include "ofMain.h"
 

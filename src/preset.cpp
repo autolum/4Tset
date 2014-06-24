@@ -18,7 +18,6 @@ preset::preset(){
 
 void preset::print(){
     for (int i = 0; i < 24; i++) cout << val[i];
-    cout << "\n";
 };
 
 void preset::set(int i, bool v){

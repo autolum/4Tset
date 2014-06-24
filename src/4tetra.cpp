@@ -70,8 +70,7 @@ void ftetra::render(float red, float green, float blue){
     
     
     fbo.begin();
-    
-        ofClear(80, 80, 80, 255);
+        ofClear(80,80,80,255);
         ofSetupScreenOrtho(1024,1024,1024,-1024);
     
         ofPushMatrix();
@@ -104,7 +103,6 @@ void ftetra::render(float red, float green, float blue){
             ofSetColor(40);
             points.draw();
         ofPopMatrix();
-    
     fbo.end();
     ofPopStyle();
 }
