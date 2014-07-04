@@ -20,6 +20,8 @@ class preset {
         void set(int i, bool v);
         void set(string vals);
         string getstr();
+        string getBytes();
+        string getInts();
 };
 
 

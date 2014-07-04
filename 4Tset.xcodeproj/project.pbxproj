@@ -62,7 +62,6 @@
 		E02E70E318DB855A006AF616 /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E02E70DF18DB855A006AF616 /* tinyxmlerror.cpp */; };
 		E02E70E418DB855A006AF616 /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E02E70E018DB855A006AF616 /* tinyxmlparser.cpp */; };
 		E031EB6718ED74A300E35810 /* preset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E031EB6518ED74A300E35810 /* preset.cpp */; };
-		E03421F31959E5DC006937BA /* yunTCP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E03421F11959E5DC006937BA /* yunTCP.cpp */; };
 		E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4328148138ABC890047C5CB /* openFrameworksDebug.a */; };
 		E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9710E8CC7DD009D7055 /* AGL.framework */; };
 		E45BE97C0E8CC7DD009D7055 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9720E8CC7DD009D7055 /* ApplicationServices.framework */; };
@@ -230,8 +229,6 @@
 		E02E70E018DB855A006AF616 /* tinyxmlparser.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlparser.cpp; sourceTree = "<group>"; };
 		E031EB6518ED74A300E35810 /* preset.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = preset.cpp; sourceTree = "<group>"; };
 		E031EB6618ED74A300E35810 /* preset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = preset.h; sourceTree = "<group>"; };
-		E03421F11959E5DC006937BA /* yunTCP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = yunTCP.cpp; sourceTree = "<group>"; };
-		E03421F21959E5DC006937BA /* yunTCP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = yunTCP.h; sourceTree = "<group>"; };
 		E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = openFrameworksLib.xcodeproj; path = ../../../libs/openFrameworksCompiled/project/osx/openFrameworksLib.xcodeproj; sourceTree = SOURCE_ROOT; };
 		E45BE9710E8CC7DD009D7055 /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
 		E45BE9720E8CC7DD009D7055 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
@@ -532,8 +529,6 @@
 				E008631218E0E37E0037F785 /* 4tetra.h */,
 				E031EB6518ED74A300E35810 /* preset.cpp */,
 				E031EB6618ED74A300E35810 /* preset.h */,
-				E03421F11959E5DC006937BA /* yunTCP.cpp */,
-				E03421F21959E5DC006937BA /* yunTCP.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -683,7 +678,6 @@
 				E027769A18E2F78300FC6066 /* ofxUICircleSlider.cpp in Sources */,
 				E02776A818E2F78300FC6066 /* ofxUIMinimalSlider.cpp in Sources */,
 				E02776AC18E2F78300FC6066 /* ofxUINumberDialer.cpp in Sources */,
-				E03421F31959E5DC006937BA /* yunTCP.cpp in Sources */,
 				E02776A418E2F78300FC6066 /* ofxUIImageToggle.cpp in Sources */,
 				E02776B818E2F78300FC6066 /* ofxUITextArea.cpp in Sources */,
 				E027769C18E2F78300FC6066 /* ofxUIDropDownList.cpp in Sources */,

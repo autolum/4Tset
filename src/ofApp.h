@@ -1,10 +1,10 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxNetwork.h"
 #include "ofxUI.h"
 #include "4tetra.h"
 #include "preset.h"
+#include "ofxNetwork.h"
 
 
 class ofApp : public ofBaseApp{
@@ -26,7 +26,10 @@ class ofApp : public ofBaseApp{
 		//void gotMessage(ofMessage msg);
          
         ofxTCPClient tcpClient;
+        bool tcpCon;
+        bool msgsend;
     
+        ofxUILabelButton * sndB;
         ofxUITextInput *filetxt;
         ofxUILabelButton *pid;
         ofxUILabelButton *pmx;
@@ -59,6 +62,7 @@ class ofApp : public ofBaseApp{
     
         void savePrst();
         void loadPrst();
+        void sendPrst();
     
         int pidx;
         char cbuffer[50];

@@ -39,3 +39,36 @@ string preset::getstr(){
     for (int i = 0; i < 24; i++) str += ofToString(val[i]);
     return str;
 };
+
+string preset::getBytes(){
+    string str;
+    str += "LED/";
+    unsigned char null = 1;
+    for (int i = 0; i < 24; i++){
+        if(val[i]){
+            str += col.r & 0xff;
+            str += col.g & 0xff;
+            str += col.b & 0xff;
+        }
+        else {
+            str += null;
+            str += null;
+            str += null;
+        }
+        
+    }
+    return str;
+};
+
+string preset::getInts(){
+    string str;
+    str += "LED/";
+    for (int i = 0; i < 24; i++){
+        if(val[i]) str += ofToString(col.getHex());
+        else str += "0";
+        str += "/";
+    }
+    return str;
+};
+
+

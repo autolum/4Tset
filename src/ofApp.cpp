@@ -26,9 +26,9 @@ void ofApp::setup(){
     filetxt = gui->addTextInput("filename", filename,310-104,50,4,4,OFX_UI_FONT_MEDIUM);
     PXLmatrix = gui->addToggleMatrix("PXLMATRIX", 4, 6,50,50);
     gui->setGlobalSliderHeight(50);
-    rslide = gui->addBiLabelSlider("RED", " R", "200 ", 0.0, 255.0, &red);
-    gslide = gui->addBiLabelSlider("GREEN", " G", "200 ", 0.0, 255.0, &green);
-    bslide = gui->addBiLabelSlider("BLUE", " B", "200 ", 0.0, 255.0, &blue);
+    rslide = gui->addBiLabelSlider("RED", " R", "200 ", 0, 254.0, &red);
+    gslide = gui->addBiLabelSlider("GREEN", " G", "200 ", 0.0, 254.0, &green);
+    bslide = gui->addBiLabelSlider("BLUE", " B", "200 ", 0.0, 254.0, &blue);
     gui->addWidget(new ofxUILabelButton("<<", false, 50, 50, 4, 494, OFX_UI_FONT_MEDIUM));
     gui->addWidget(new ofxUILabelButton(">>", false, 50, 50, 56, 494, OFX_UI_FONT_MEDIUM));
     gui->addWidget(new ofxUILabelButton("+", false, 50, 50, 212, 494, OFX_UI_FONT_MEDIUM));
@@ -37,12 +37,13 @@ void ofApp::setup(){
     gui->addWidget(new ofxUILabelButton("a", false, 50, 50, 264, 546, OFX_UI_FONT_MEDIUM));
     gui->addWidget(new ofxUILabelButton("pid", false, 50, 50, 108, 494, OFX_UI_FONT_MEDIUM));
     gui->addWidget(new ofxUILabelButton("pmx", false, 50, 50, 160, 494, OFX_UI_FONT_MEDIUM));
-    gui->addWidget(new ofxUILabelToggle("send", false,102,50,4,546,OFX_UI_FONT_MEDIUM));
+    gui->addWidget(new ofxUILabelButton("send", false,102,50,4,546,OFX_UI_FONT_MEDIUM));
     gui->addWidget(new ofxUILabelToggle("connect", false,102,50,108,546,OFX_UI_FONT_MEDIUM));
     gui->addWidget(new ofxUILabelButton("s", false, 50, 50, 212, 4, OFX_UI_FONT_MEDIUM));
     gui->addWidget(new ofxUILabelButton("l", false, 50, 50, 264, 4, OFX_UI_FONT_MEDIUM));
     filetxt->setAutoClear(false);
     filetxt->setTriggerType(OFX_UI_TEXTINPUT_ON_ENTER);
+    sndB = (ofxUILabelButton *) gui->getWidget("send");
     pid = (ofxUILabelButton *) gui->getWidget("pid");
     pmx = (ofxUILabelButton *) gui->getWidget("pmx");
     pid->setLabelText(ofToString(pidx+1));
@@ -75,7 +76,15 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    
+    /*
+    if(tcpClient.isConnected()) {
+        char c[3];
+        c[0] = (unsigned char) red;
+        c[1] = (unsigned char) green;
+        c[2] = (unsigned char) blue;
+        tcpClient.sendRawBytes(c, 3);
+    }
+    */
 }
 
 //--------------------------------------------------------------
@@ -83,6 +92,30 @@ void ofApp::draw(){
     pyra->fbo.draw(918-600, 0, 600, 600);
 }
 
+//--------------------------------------------------------------
+void ofApp::sendPrst(){
+    string msg;
+    int r = red;
+    int g = green;
+    int b = blue;
+    
+    if(r == g) g--;
+    if(r == b) b--;
+    if(g == b) g--;
+    
+    if(g < 0) g = 0;
+    if(b < 0) b == 0;
+    
+    msg += "LED/";
+    msg += ofToString(r);
+    msg += "/";
+    msg += ofToString(g);
+    msg += "/";
+    msg += ofToString(b);
+    //tcpClient.sendRaw(presets[pidx].getInts());
+    tcpClient.send(msg);
+    cout << "msg: " << msg << "\n";
+}
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     if(key == OF_KEY_RETURN && filetxt->isFocused()){
@@ -263,7 +296,25 @@ void ofApp::guiEvent(ofxUIEventArgs &e)
         pidx = 0;
         updatePrst(pidx);
     }
+    else if(name == "connect"){
+        ofxUILabelToggle *btn = (ofxUILabelToggle *) e.widget;
+        if(!btn->getValue()) tcpClient.close();
+        if(btn->getValue()){
+            tcpCon = tcpClient.setup("192.168.240.1", 5555);
+        }
+        if(!tcpClient.isConnected()) btn->setValue(false);
+    }
+    else if(name == "send"){
+        ofxUIButton *btn = (ofxUIButton *) e.widget;
+        if(btn->getValue()){
+            sendPrst();
+        }
+    }
     set.col = ofColor(red,green,blue);
+    //cout << set.col.getHex() << "\n";
+    //char[6] hc = ((int)blue << 16)|((int)green << 8)|(int)red;
+    //cout << hc << "\n";
+    //cout << ofToHex(hc)<< "\n";
     presets[pidx] = set;
     pyra->render(red,green,blue);
     pid->setLabelText(ofToString(pidx+1));
